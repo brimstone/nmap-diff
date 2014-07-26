@@ -1,10 +1,10 @@
-package main
+package nmaprun
 
 import (
 	"encoding/xml"
-	"fmt"
 	//"github.com/davecgh/go-spew/spew"
 	"os"
+	"io"
 )
 
 // http://golang.org/pkg/encoding/xml/#example_Unmarshal
@@ -52,24 +52,16 @@ type Address struct {
 	Vendor  string `xml:"vendor,attr"`
 }
 
-func main() {
-	file, err := os.Open("out.xml")
+func NewFromFile(path string) (*NmapRun, error) {
+	file, err := os.Open(path)
 	if err != nil {
-		return
+		return nil, nil
 	}
+	return NewFromReader(file)
+}
+
+func NewFromReader(r io.Reader) (*NmapRun, error) {
 	n := NmapRun{}
-	xml.NewDecoder(file).Decode(&n)
-	for _, host := range n.Host {
-		fmt.Printf("Host")
-		for _, addr := range host.Address {
-			fmt.Printf(" %s", addr.Address)
-		}
-		fmt.Printf("\n")
-		fmt.Printf("Open:")
-		for _, port := range host.Ports.Port {
-			fmt.Printf(" %d", port.PortID)
-		}
-		fmt.Printf("\n")
-		fmt.Printf("\n")
-	}
+	xml.NewDecoder(r).Decode(&n)
+	return &n, nil
 }
