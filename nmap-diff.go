@@ -4,12 +4,17 @@ import (
 	"fmt"
 	//"github.com/davecgh/go-spew/spew"
 	"github.com/brimstone/nmap-diff/nmaprun"
+	"os"
 )
 
 // http://golang.org/pkg/encoding/xml/#example_Unmarshal
 
 func main() {
-	n, err := nmaprun.NewFromFile("scan.xml")
+	if len(os.Args) < 2 {
+		fmt.Println("Usage:", os.Args[0], " <file.xml>")
+		os.Exit(1)
+	}
+	n, err := nmaprun.NewFromFile(os.Args[1])
 	if err != nil {
 		fmt.Println("got an error")
 	}
